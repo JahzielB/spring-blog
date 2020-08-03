@@ -1,23 +1,30 @@
 package com.codeup.springblog;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+
 @Controller
 public class PostController {
     @GetMapping("/posts")
-    @ResponseBody
-    public String posts() {
-        return "This is where posts will be.";
+    public String posts(Model model) {
+        ArrayList<Post> posts = new ArrayList<>();
+        posts.add(new Post("post1", "post1body"));
+        posts.add(new Post("post2", "post2body"));
+        model.addAttribute("posts", posts);
+        return "/posts/index";
     }
 
     @GetMapping("/posts/{id}")
-    @ResponseBody
-    public String individualPost(@PathVariable int id) {
-        return "This is where a post with an id of " + id + " will be.";
+    public String individualPost(@PathVariable int id, Model model) {
+        Post myPost = new Post(1, "test", "testestset");
+        model.addAttribute("post", myPost);
+        return "/posts/show";
     }
 
     @GetMapping("/posts/create")
