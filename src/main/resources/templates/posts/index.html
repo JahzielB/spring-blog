@@ -8,6 +8,14 @@
 <div th:each="post : ${posts}">
     <p th:text="${post.title}"></p>
     <p th:text="${post.body}"></p>
+    <form action="/posts/delete" method="post">
+        <input type="hidden" name="delete_post_id" th:value="${post.id}">
+        <input type="submit" value="Delete">
+    </form>
+    <form action="/posts/edit" method="post">
+        <input type="hidden" name="edit_post_id" th:value="${post.id}">
+        <input type="submit" value="Edit">
+    </form>
 </div>
 </body>
 </html>

@@ -1,22 +1,44 @@
 package com.codeup.springblog;
 
+import org.dom4j.rule.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 @Controller
 public class PostController {
+    private final PostRepository postsDao;
+
+    public PostController(PostRepository postsDao) {
+        this.postsDao = postsDao;
+    }
+
     @GetMapping("/posts")
     public String posts(Model model) {
-        ArrayList<Post> posts = new ArrayList<>();
-        posts.add(new Post("post1", "post1body"));
-        posts.add(new Post("post2", "post2body"));
-        model.addAttribute("posts", posts);
+        model.addAttribute("posts", postsDao.findAll());
+        return "/posts/index";
+    }
+
+    @PostMapping(path = "/posts/delete", name = "delete_post_id")
+    public String deletePost(@RequestParam(name = "delete_post_id") long id, Model model) {
+        postsDao.deleteById(id);
+        posts(model);
+        return "/posts/index";
+    }
+
+    @PostMapping(path = "/posts/edit", name = "edit_post_id")
+    public String editPost(@RequestParam(name = "edit_post_id") long id, Model model) {
+        Post post = postsDao.getOne(id);
+        model.addAttribute("post", post);
+        return "/posts/show";
+    }
+
+    @PostMapping(path = "/posts/show")
+    public String submitEditPost(@RequestParam(name = "change_post_id") long id, @RequestParam(name = "title") String title, @RequestParam(name = "body") String body,  Model model) {
+        postsDao.save(new Post(id, title, body));
+        posts(model);
         return "/posts/index";
     }
 
