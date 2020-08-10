@@ -19,19 +19,19 @@ public class PostController {
     @GetMapping("/posts")
     public String posts(Model model) {
         model.addAttribute("posts", postsDao.findAll());
-        return "/posts/index";
+        return "posts/index";
     }
 
     @PostMapping(path = "/posts/delete", name = "delete_post_id")
     public String deletePost(@RequestParam(name = "delete_post_id") long id, Model model) {
         postsDao.deleteById(id);
-        return "redirect:/posts";
+        return "redirect:posts";
     }
 
     @PostMapping(path = "/posts/show")
     public String submitEditPost(@RequestParam(name = "change_post_id") long id, @RequestParam(name = "title") String title, @RequestParam(name = "body") String body,  Model model) {
         postsDao.save(new Post(id, title, body));
-        return "redirect:/posts";
+        return "redirect:posts";
     }
 
     @GetMapping("/posts/{id}")
@@ -40,19 +40,19 @@ public class PostController {
         User user = post.getParentUser();
         model.addAttribute("post", post);
         model.addAttribute("user", user);
-        return "/posts/show";
+        return "posts/show";
     }
 
     @GetMapping("/posts/create")
     public String createPostForm(Model model) {
         model.addAttribute("post", new Post());
-        return "/posts/create";
+        return "posts/create";
     }
 
     @PostMapping("/posts/create")
     public String createPost(@ModelAttribute Post post) {
         postsDao.save(post);
         emailService.prepareAndSend(postsDao.getOne((long) 3), "post created", "you created a post");
-        return "redirect:/posts";
+        return "redirect:posts";
     }
 }
