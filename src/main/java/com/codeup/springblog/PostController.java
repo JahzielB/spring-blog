@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostRepository postsDao;
     private final UserRepository usersDao;
+    private final EmailService emailService;
 
-    public PostController(PostRepository postsDao, UserRepository usersDao) {
+    public PostController(PostRepository postsDao, UserRepository usersDao, EmailService emailService) {
         this.postsDao = postsDao;
         this.usersDao = usersDao;
+        this.emailService = emailService;
     }
 
     @GetMapping("/posts")
@@ -50,6 +52,7 @@ public class PostController {
     @PostMapping("/posts/create")
     public String createPost(@ModelAttribute Post post) {
         postsDao.save(post);
+        emailService.prepareAndSend(postsDao.getOne((long) 3), "post created", "you created a post");
         return "redirect:/posts";
     }
 }
