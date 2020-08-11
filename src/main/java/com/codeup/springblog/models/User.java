@@ -1,4 +1,6 @@
-package com.codeup.springblog;
+package com.codeup.springblog.models;
+
+import com.codeup.springblog.models.Post;
 
 import javax.persistence.*;
 import java.util.List;
@@ -69,5 +71,12 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+
+    public User(User copy) {
+        id = copy.id; // This line is SUPER important! Many things won't work if it's absent
+        email = copy.email;
+        username = copy.username;
+        password = copy.password;
     }
 }
